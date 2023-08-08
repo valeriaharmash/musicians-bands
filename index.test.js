@@ -119,4 +119,102 @@ describe('Band, Musician, and Song Models', () => {
 		const allSongs = await Song.findAll()
 		expect(allSongs.length).toEqual(2)
 	})
+
+	test('Musician can only have one Band', async () => {
+		const testMusician = await Musician.create({
+			name: 'John Doe',
+			instrument: 'drums'
+		})
+
+		const testBand = await Band.create({
+			name: 'The Pussycat Dolls',
+			genre: 'pop',
+			showCount: 10
+		})
+
+		await testMusician.setBand(testBand)
+
+		const associatedBand = testMusician.getBand()
+
+		expect(associatedBand instanceof Band).toBeTruthy
+	})
+
+	test('Band can have multiple Musicians', async () => {
+		const testMusician = await Musician.create({
+			name: 'John Doe',
+			instrument: 'drums'
+		})
+
+		const testMusician2 = await Musician.create({
+			name: 'John Dry',
+			instrument: 'drums'
+		})
+
+		const testBand = await Band.create({
+			name: 'The Pussycat Dolls',
+			genre: 'pop',
+			showCount: 10
+		})
+
+		await testBand.addMusician(testMusician)
+		await testBand.addMusician(testMusician2)
+
+		const associatedMusicians = await testBand.getMusicians()
+
+		expect(associatedMusicians.length).toBe(2)
+	})
+
+	test('Band can have multiple Songs', async () => {
+		const testSong = await Song.create({
+			title: 'Fun Song',
+			year: 1997,
+			length: 5
+		})
+
+		const testSong2 = await Song.create({
+			title: 'Wind of Change',
+			year: 1997,
+			length: 5
+		})
+
+		const testBand = await Band.create({
+			name: 'The Pussycat Dolls',
+			genre: 'pop',
+			showCount: 10
+		})
+
+		await testBand.addSong(testSong)
+		await testBand.addSong(testSong2)
+
+		const associatedSongs = await testBand.getSongs()
+
+		expect(associatedSongs.length).toBe(2)
+	})
+
+	test('Song can have multiple Bands', async () => {
+		const testSong = await Song.create({
+			title: 'Fun Song',
+			year: 1997,
+			length: 5
+		})
+
+		const testBand = await Band.create({
+			name: 'The Pussycat Dolls',
+			genre: 'pop',
+			showCount: 10
+		})
+
+		const testBand2 = await Band.create({
+			name: 'The Heads',
+			genre: 'pop',
+			showCount: 10
+		})
+
+		await testSong.addBand(testBand)
+		await testSong.addBand(testBand2)
+
+		const associatedBands = await testSong.getBands()
+
+		expect(associatedBands.length).toBe(2)
+	})
 })

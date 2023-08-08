@@ -2,11 +2,11 @@ const { Band } = require('./models/Band')
 const { Musician } = require('./models/Musician')
 const { Song } = require('./models/Song')
 
-Song.belongsTo(Band)
-Band.hasMany(Song)
+Song.belongsToMany(Band, { through: 'BandSong' })
+Band.belongsToMany(Song, { through: 'BandSong' })
 
-Musician.belongsTo(Band)
 Band.hasMany(Musician)
+Musician.belongsTo(Band)
 
 module.exports = {
 	Band,
